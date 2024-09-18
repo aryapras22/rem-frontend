@@ -9,11 +9,12 @@ const LandingPage = () => {
   const [route, setRoute] = useState("");
 
   const placeholders = [
-    "What's the first rule of Fight Club?",
-    "Who is Tyler Durden?",
-    "Where is Andrew Laeddis Hiding?",
-    "Write a Javascript method to reverse a string",
-    "How to assemble your own PC?",
+    "Covid 19",
+    "Healthcare",
+    "Food Management",
+    "Economic Analysis",
+    "Climate Change",
+    
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +24,10 @@ const LandingPage = () => {
     e.preventDefault();
 
     // add delay
-    router.push("source-selection");
+
+    setTimeout(() => {
+      router.push("source-selection");
+    }, 2000);
   };
   return (
     <div className='h-[100vh] flex flex-col justify-center  items-center px-4 bg-dot-white/[0.2] bg-black '>
