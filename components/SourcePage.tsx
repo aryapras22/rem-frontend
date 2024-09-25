@@ -8,11 +8,12 @@ import { BsTwitterX } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { mockdata } from "@/database/mockData";
+import { useSearchParams } from "next/navigation";
 
-type SourceType = "x" | "news" | "playstore" | "appstore";
+type SourceType = "xtwitter" | "news" | "playstore" | "appstore";
 
 interface DataState {
-  x: { loading: boolean; data: null };
+  xtwitter: { loading: boolean; data: null };
   news: { loading: boolean; data: null };
   playstore: { loading: boolean; data: null };
   appstore: { loading: boolean; data: null };
@@ -20,44 +21,36 @@ interface DataState {
 
 const SourcePage = () => {
   const [dataState, setDataState] = useState<DataState>({
-    x: { loading: false, data: null },
+    xtwitter: { loading: false, data: null },
     news: { loading: false, data: null },
     playstore: { loading: false, data: null },
     appstore: { loading: false, data: null },
   });
-
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
 
-  function handleClick(source: SourceType) {
-    // set loading state
+  async function handleClick(source: SourceType) {
     setDataState((prevState) => ({
       ...prevState,
-      [source]: { ...prevState[source], loading: true },
+      [source]: { loading: true, data: null },
     }));
-    setTimeout(() => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/get_data/?q=${query}&type=${source}`
+      );
+      const data = await response.json();
       setDataState((prevState) => ({
         ...prevState,
-        [source]: { loading: false, data: mockdata[source] },
+        [source]: { loading: false, data },
       }));
-    }, 5000);
-
-    // delay for 2 seconds
-
-    // set data
+    } catch (error) {
+      console.log(error);
+    }
   }
   function handleClickPreprocessing() {
-    // get all data that is not null
-    // const data = Object.values(dataState).filter((item) => item.data !== null);
-
-    // route to preprocessing page
     router.push("preprocessing");
   }
-
-  // loading state
-  // error state
-  // success state
-
-  // show data
 
   return (
     <div className='min-h-screen bg-black bg-dot-white/[0.2] flex flex-col justify-center items-center'>
@@ -70,11 +63,11 @@ const SourcePage = () => {
 
       <div className='flex justify-around pt-10 w-full'>
         <SourceCard
-          onClick={() => handleClick("x")}
-          source='x'
+          onClick={() => handleClick("xtwitter")}
+          source='xtwitter'
           sourceLogo={<BsTwitterX className='h-20 w-20 dark:text-white' />}
-          isScrapping={dataState.x.loading}
-          data={dataState.x.data}
+          isScrapping={dataState.xtwitter.loading}
+          data={dataState.xtwitter.data}
         />
         <SourceCard
           onClick={() => handleClick("news")}

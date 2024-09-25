@@ -1,4 +1,3 @@
-import { div } from "framer-motion/client";
 import { WhiteButton } from "../ui/buttons";
 import { Skeleton } from "../ui/card";
 

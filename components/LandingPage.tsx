@@ -14,20 +14,12 @@ const LandingPage = () => {
     "Food Management",
     "Economic Analysis",
     "Climate Change",
-    
   ];
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-  };
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // add delay
-
     setTimeout(() => {
-      router.push("source-selection");
-    }, 2000);
+      router.push(`source-selection?q=${route}`);
+    }, 1500);
   };
   return (
     <div className='h-[100vh] flex flex-col justify-center  items-center px-4 bg-dot-white/[0.2] bg-black '>
