@@ -15,11 +15,23 @@ const LandingPage = () => {
     "Economic Analysis",
     "Climate Change",
   ];
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setTimeout(() => {
-      router.push(`source-selection?q=${route}`);
-    }, 1500);
+    try {
+      const response = await fetch(
+        `
+        http://127.0.0.1:8000/api/add_query/?q=${route}`,
+        {
+          method: "POST",
+        }
+      );
+      const data = await response.json();
+      setTimeout(() => {
+        router.push(`source-selection?q=${route}&id=${data}`);
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className='h-[100vh] flex flex-col justify-center  items-center px-4 bg-dot-white/[0.2] bg-black '>

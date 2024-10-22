@@ -5,9 +5,8 @@ import { FaGooglePlay } from "react-icons/fa6";
 import { FaAppStoreIos } from "react-icons/fa";
 import { ImNewspaper } from "react-icons/im";
 import { BsTwitterX } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { mockdata } from "@/database/mockData";
 import { useSearchParams } from "next/navigation";
 
 type SourceType = "xtwitter" | "news" | "playstore" | "appstore";
@@ -29,6 +28,7 @@ const SourcePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
+  const id = searchParams.get("id");
 
   async function handleClick(source: SourceType) {
     setDataState((prevState) => ({
@@ -36,9 +36,11 @@ const SourcePage = () => {
       [source]: { loading: true, data: null },
     }));
     try {
+      console.log(id);
       const response = await fetch(
-        `http://127.0.0.1:8000/api/get_data/?q=${query}&type=${source}`
+        `http://127.0.0.1:8000/api/get_data/?q=${query}&type=${source}&id=${id}`
       );
+      
       const data = await response.json();
       setDataState((prevState) => ({
         ...prevState,
