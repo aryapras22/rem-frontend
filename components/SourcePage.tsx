@@ -50,8 +50,8 @@ const SourcePage = () => {
       console.log(error);
     }
   }
-  function handleClickPreprocessing() {
-    router.push("preprocessing");
+  async function handleClickPreprocessing() {
+    router.push(`/preprocessing?id=${id}`);
   }
 
   return (

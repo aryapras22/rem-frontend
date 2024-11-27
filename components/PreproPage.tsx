@@ -2,8 +2,11 @@
 import { Label } from "./ui/label";
 import Textarea from "./ui/textarea";
 import { BlackButton } from "./ui/buttons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import Loading from "./Loading";
+import axios from "axios";
 
 const PreproPage = () => {
   const data = {
@@ -13,16 +16,51 @@ const PreproPage = () => {
     "4": "I love the app, but I wish it had more customization options.",
   };
   const [textArea, setTextArea] = useState(JSON.stringify(data, null, 2));
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  useEffect(() => {
+    try {
+      axios
+        .get(`http://127.0.0.1:8000/api/preprocessing/?id=${id}`)
+        .then((response) => {
+          setTextArea(JSON.stringify(response.data, null, 2));
+          setLoading(false);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   function handleOnSubmit(e: any) {
     e.preventDefault();
     console.log(textArea);
-    router.push("/userstory");
+    router.push("userstory?id=" + id);
   }
 
   function handleOnChange(e: any) {
     setTextArea(e.target.value);
+  }
+
+  function handleCleanData() {
+    setLoading(true);
+    try {
+      axios
+        .get(`http://127.0.0.1:8000/api/user_story/?id=${id}`)
+        .then((response) => {
+          setTextArea(JSON.stringify(response.data, null, 2));
+          setLoading(false);
+        });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (
@@ -36,7 +74,7 @@ const PreproPage = () => {
           <Textarea
             id='preprossed-data'
             placeholder=''
-            className=' min-h-[25vw]'
+            className='min-h-[70vh] max-h-[80vh]'
             data={data}
             onChange={handleOnChange}
           >
@@ -44,6 +82,13 @@ const PreproPage = () => {
           </Textarea>
           <div className='flex justify-center items-center mt-10 h-[30vh] sm:h-[20vh]'>
             <BlackButton text='Generate User Story' type='submit' />
+            <div className='ml-4'>
+              <BlackButton
+                text='Clean Data'
+                type='button'
+                onClick={handleCleanData}
+              />
+            </div>
           </div>
         </form>
       </div>
